@@ -1,0 +1,25 @@
+{
+  "status": "success",
+  "transformedData": [
+    {
+      "distributorCode": "D001",
+      "CustomerName": "株式会社ABC",
+      "AccountNumber": "AC123",
+      "Rank": "A",
+      "SalesPic": "",
+      "PartsSalesPic": "",
+      "ServicePic": "",
+      "BillingAddress1": ""
+    },
+    {
+      "distributorCode": "D002",
+      "CustomerName": "株式会社XYZ",
+      "AccountNumber": "AC999",
+      "Rank": "B",
+      "SalesPic": "",
+      "PartsSalesPic": "",
+      "ServicePic": "",
+      "BillingAddress1": ""
+    }
+  ]
+}
