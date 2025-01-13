@@ -5,9 +5,9 @@ from openpyxl import load_workbook
 from typing import Dict, Any
 
 MAX_FILE_SIZE = 500 * 1024 * 1024  # 500MB
-MAX_ROWS = 100
+DEFAULT_MAX_ROWS = 100  # デフォルトは100行
 
-def convert_xlsx_to_json(file_path: str) -> Dict[str, Any]:
+def convert_xlsx_to_json(file_path: str, limit_rows: bool = True) -> Dict[str, Any]:
     """
     大きなXLSXファイルが来ても、先頭MAX_ROWS行のみを読み込み、
     それをrowDataとしてJSON形式のdictにまとめて返す。
@@ -49,7 +49,7 @@ def convert_xlsx_to_json(file_path: str) -> Dict[str, Any]:
     for row in ws.iter_rows(values_only=True):
         rowData.append(list(row))
         count += 1
-        if count >= MAX_ROWS:
+        if limit_rows and count >= DEFAULT_MAX_ROWS:
             break
 
     return {

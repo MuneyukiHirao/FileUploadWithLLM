@@ -151,3 +151,43 @@ def call_mapping(request_data: dict) -> dict:
             "message": f"Failed to parse JSON from LLM: {str(e)}",
             "rawResponse": str(chat_completion)
         }
+
+def call_mapping_refine(original_mapping: dict, user_instruction: str) -> dict:
+    """
+    既存マッピングと自然言語指示をLLMに渡し、修正後のマッピングを生成してもらう。
+    戻り値は call_mapping() と同様の {"status": ..., "mapping": [...], "missingRequiredFields": [...], "additionalNotes": ""} の形を期待。
+    """
+    system_prompt = ""
+    try:
+        with open("system_prompt_mapping.md", "r", encoding="utf-8") as f:
+            system_prompt = f.read()
+    except Exception as e:
+        raise RuntimeError(f"Failed to load system_prompt_mapping.md: {str(e)}")
+
+    # ユーザープロンプトを組み立て
+    # 既存マッピングとユーザ指示を JSON で渡す
+    user_prompt_content = {
+        "originalMapping": original_mapping,
+        "userInstruction": user_instruction
+    }
+    user_prompt = json.dumps(user_prompt_content, ensure_ascii=False)
+
+    try:
+        chat_completion = client.chat.completions.create(
+            model="gpt-4o",  # 任意のモデル名
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
+            temperature=0.0
+        )
+    except Exception as e:
+        raise RuntimeError(f"LLM API call failed: {str(e)}")
+
+    # レスポンスをJSONパース
+    try:
+        assistant_content = chat_completion.choices[0].message.content
+        parsed_json = json.loads(assistant_content)
+        return parsed_json
+    except Exception as e:
+        raise RuntimeError(f"Failed to parse JSON from LLM: {str(e)}")

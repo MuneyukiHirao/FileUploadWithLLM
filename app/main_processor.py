@@ -5,26 +5,21 @@ from app.llm_api import call_header_detection, call_mapping
 
 def process_file_and_map(file_path: str) -> dict:
     """
-    1. XLSXファイルを先頭100行だけJSON化
-    2. ChatGPTにヘッダー判定してもらう
-    3. ChatGPTにマッピング提案してもらう
-    4. 結果をまとめて返す
+    1. XLSX/CSV/JSONファイルを100行まで読み込み
+    2. ChatGPTでヘッダー判定
+    3. ChatGPTでマッピング提案
+    4. 結果を返す
     """
-
-    # (1) XLSXファイルをJSON化
-    result = convert_xlsx_to_json(file_path)
+ 
+    result = convert_xlsx_to_json(file_path, limit_rows=True)
     if result["status"] != "success":
-        return result  # エラー情報をそのまま返す
-
+        return result
+    
     rowData = result.get("rowData", [])
     fileType = result.get("fileType", "unknown")
 
-    # (2) ヘッダー判定 (LLM)
-    header_request = {
-        "fileType": fileType,
-        "rowData": rowData
-    }
-    header_response = call_header_detection(header_request)
+    # ヘッダー判定
+    header_response = call_header_detection({"fileType": fileType, "rowData": rowData})
     if header_response.get("status") == "error":
         return {
             "status": "error",
@@ -33,18 +28,13 @@ def process_file_and_map(file_path: str) -> dict:
         }
 
     header_info = header_response.get("headerDetection", {})
-    is_header = header_info.get("isHeaderPresent", False)
     header_index = header_info.get("headerRowIndex", -1)
-    reason = header_info.get("reason", "")
 
-    # (3) マッピング (LLM)
-    mapping_request = {
+    mapping_response = call_mapping({
         "fileType": fileType,
         "headerRowIndex": header_index,
         "rowData": rowData
-    }
-    mapping_response = call_mapping(mapping_request)
-
+    })
     if mapping_response.get("status") == "error":
         return {
             "status": "error",
@@ -52,9 +42,13 @@ def process_file_and_map(file_path: str) -> dict:
             "details": mapping_response
         }
 
-    # (4) 最終結果をまとめる
+    # 先頭3行をサンプルデータとして返す (ヘッダー行も含む)
+    sample_rows = rowData[:3]
+
     return {
         "status": "success",
         "headerResponse": header_response,
-        "mappingResponse": mapping_response
+        "mappingResponse": mapping_response,
+        "rowData": rowData  # ★ ここでrowDataを含める
     }
+
