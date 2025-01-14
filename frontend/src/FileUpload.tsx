@@ -24,10 +24,10 @@ const FileUpload: React.FC = () => {
   // ▼ ファイルアップロード実行
   const handleUpload = async () => {
     if (!selectedFile) {
-      setMessage('ファイルを選択してください。');
+      setMessage('Please select file.');
       return;
     }
-    setMessage('アップロード中...');
+    setMessage('Uploading...');
 
     try {
       const formData = new FormData();
@@ -41,7 +41,7 @@ const FileUpload: React.FC = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        setMessage(errorData.message || 'ファイルアップロードに失敗しました。');
+        setMessage(errorData.message || 'Failed to upload file.');
         return;
       }
 
@@ -49,22 +49,22 @@ const FileUpload: React.FC = () => {
       if (data.status === 'success') {
         // アップロード成功、ファイル名を取得
         setSavedFileName(data.savedFileName);
-        setMessage('ファイルアップロード成功！ 解析を開始します...');
+        setMessage('File upload succes! Analysis start...');
         // 続けて解析APIを呼ぶ
         await analyzeFile(data.savedFileName);
       } else {
-        setMessage(data.message || 'ファイルアップロードに失敗しました。');
+        setMessage(data.message || 'Failed to upload file.');
       }
     } catch (error) {
       console.error(error);
-      setMessage('サーバーとの通信に失敗しました。');
+      setMessage('Failed to communicate with server.');
     }
   };
 
   // ▼ /api/analyze を呼び出してLLM解析を行い、その結果を受け取る
   //    解析が成功すれば /mapping へ画面遷移
   const analyzeFile = async (fileName: string) => {
-    setMessage('解析中...');
+    setMessage('Analyzing...');
     try {
       const response = await fetch('/api/analyze', {
         method: 'POST',
@@ -74,13 +74,13 @@ const FileUpload: React.FC = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        setMessage(errorData.message || '解析に失敗しました。');
+        setMessage(errorData.message || 'Failed to analyze.');
         return;
       }
 
       const resultData = await response.json();
       if (resultData.status === 'success') {
-        setMessage('解析完了！ マッピング画面へ遷移します...');
+        setMessage('Analysis done! Moving to mapping...');
         setAnalysisResult(resultData);
 
         // マッピング画面に遷移。解析結果 & fileName を一緒に渡す。
@@ -91,21 +91,21 @@ const FileUpload: React.FC = () => {
           },
         });
       } else {
-        setMessage(resultData.message || '解析に失敗しました。');
+        setMessage(resultData.message || 'Failed to analyze.');
       }
     } catch (err) {
       console.error(err);
-      setMessage('サーバーとの通信中にエラーが発生しました。');
+      setMessage('Error occured while communicating with server.');
     }
   };
 
   return (
     <div style={{ margin: '2rem' }}>
-      <h1>ファイルアップロード</h1>
+      <h1>Upload file</h1>
       <div style={{ marginBottom: '1rem' }}>
         <input type="file" onChange={handleFileChange} />
         <button onClick={handleUpload} style={{ marginLeft: '1rem' }}>
-          アップロード
+          Upload
         </button>
       </div>
 
@@ -118,7 +118,7 @@ const FileUpload: React.FC = () => {
       {/* デバッグや確認用に表示 */}
       {savedFileName && (
         <div style={{ marginTop: '1rem' }}>
-          <strong>サーバ上のファイル名:</strong> {savedFileName}
+          <strong>File name on server:</strong> {savedFileName}
         </div>
       )}
       {analysisResult && analysisResult.status === 'success' && (

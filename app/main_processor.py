@@ -20,6 +20,7 @@ def process_file_and_map(file_path: str) -> dict:
 
     # ヘッダー判定
     header_response = call_header_detection({"fileType": fileType, "rowData": rowData})
+    print("[DEBUG] header_response =", header_response)
     if header_response.get("status") == "error":
         return {
             "status": "error",

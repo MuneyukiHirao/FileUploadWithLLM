@@ -7,17 +7,17 @@ const RemapInstruction: React.FC<{ onRemap: (userInstruction: string) => void }>
 
   return (
     <div style={{ marginTop: '1rem', backgroundColor: '#f7f7f7', padding: '1rem' }}>
-      <h3>修正指示</h3>
+      <h3>Revision instruction</h3>
       <textarea
         rows={5}
         cols={50}
         value={instruction}
         onChange={(e) => setInstruction(e.target.value)}
-        placeholder="例）CustomerNameはExcelの『顧客名（略称）』列ではなく、『顧客名』列を使って欲しい。"
+        placeholder="For example, please use the 'Customer Name' column in Excel for 'CustomerName,' instead of the 'Customer Name (abbreviated)' column."
       />
       <br />
       <button onClick={() => onRemap(instruction)} style={{ marginTop: '0.5rem' }}>
-        再マッピング実行
+        Execute re-mapping
       </button>
     </div>
   );
@@ -101,11 +101,11 @@ const MappingReview: React.FC<MappingReviewProps> = ({
     <table style={{ borderCollapse: 'collapse', width: '100%' }}>
       <thead>
         <tr>
-          <th style={{ border: '1px solid #ccc', padding: '8px' }}>システムフィールド</th>
-          <th style={{ border: '1px solid #ccc', padding: '8px' }}>必須 or 任意</th>
-          <th style={{ border: '1px solid #ccc', padding: '8px' }}>マッピングされた列</th>
-          <th style={{ border: '1px solid #ccc', padding: '8px' }}>信頼度</th>
-          <th style={{ border: '1px solid #ccc', padding: '8px' }}>サンプルデータ(最大3件)</th>
+          <th style={{ border: '1px solid #ccc', padding: '8px' }}>System field</th>
+          <th style={{ border: '1px solid #ccc', padding: '8px' }}>Mandatory or Optional</th>
+          <th style={{ border: '1px solid #ccc', padding: '8px' }}>Mapped column</th>
+          <th style={{ border: '1px solid #ccc', padding: '8px' }}>Confidence</th>
+          <th style={{ border: '1px solid #ccc', padding: '8px' }}>Sample data(Max 3 records)</th>
         </tr>
       </thead>
       <tbody>
@@ -117,17 +117,17 @@ const MappingReview: React.FC<MappingReviewProps> = ({
               <tr key={field.name}>
                 <td style={{ border: '1px solid #ccc', padding: '8px' }}>{field.label}</td>
                 <td style={{ border: '1px solid #ccc', padding: '8px' }}>
-                  {field.required ? '必須' : '任意'}
+                  {field.required ? 'Mandatory' : 'Optional'}
                 </td>
                 <td style={{ border: '1px solid #ccc', padding: '8px' }}>
-                  列Index: {found.columnIndex}
+                  Column Index: {found.columnIndex}
                   {found.columnName ? ` (${found.columnName})` : ''}
                 </td>
                 <td style={{ border: '1px solid #ccc', padding: '8px' }}>
                   {found.confidence.toFixed(2)}
                 </td>
                 <td style={{ border: '1px solid #ccc', padding: '8px' }}>
-                  {samples.length > 0 ? samples.join(' / ') : '(データなし)'}
+                  {samples.length > 0 ? samples.join(' / ') : '(No data)'}
                 </td>
               </tr>
             );
@@ -137,10 +137,10 @@ const MappingReview: React.FC<MappingReviewProps> = ({
               <tr key={field.name} style={{ backgroundColor: '#fff2f2' }}>
                 <td style={{ border: '1px solid #ccc', padding: '8px' }}>{field.label}</td>
                 <td style={{ border: '1px solid #ccc', padding: '8px' }}>
-                  {field.required ? '必須' : '任意'}
+                  {field.required ? 'Mandatory' : 'Optional'}
                 </td>
                 <td style={{ border: '1px solid #ccc', padding: '8px' }}>
-                  (未マッピング)
+                  (Unmapped)
                 </td>
                 <td style={{ border: '1px solid #ccc', padding: '8px' }}>
                   -
@@ -187,9 +187,9 @@ const MappingReview: React.FC<MappingReviewProps> = ({
     <table style={{ borderCollapse: 'collapse', width: '100%', marginTop: '1rem' }}>
       <thead>
         <tr style={{ background: '#f2f2f2' }}>
-          <th style={{ border: '1px solid #ccc', padding: '8px' }}>列Index</th>
-          <th style={{ border: '1px solid #ccc', padding: '8px' }}>列名</th>
-          <th style={{ border: '1px solid #ccc', padding: '8px' }}>サンプルデータ(最大3件)</th>
+          <th style={{ border: '1px solid #ccc', padding: '8px' }}>Column Index</th>
+          <th style={{ border: '1px solid #ccc', padding: '8px' }}>Column name</th>
+          <th style={{ border: '1px solid #ccc', padding: '8px' }}>Sample data(Max 3 records)</th>
         </tr>
       </thead>
       <tbody>
@@ -203,9 +203,9 @@ const MappingReview: React.FC<MappingReviewProps> = ({
           return (
             <tr key={col.colIndex} style={{ backgroundColor: '#fff8dc' }}>
               <td style={{ border: '1px solid #ccc', padding: '8px' }}>{col.colIndex}</td>
-              <td style={{ border: '1px solid #ccc', padding: '8px' }}>{colName || '(不明)'}</td>
+              <td style={{ border: '1px solid #ccc', padding: '8px' }}>{colName || '(Unknown)'}</td>
               <td style={{ border: '1px solid #ccc', padding: '8px' }}>
-                {samples.length > 0 ? samples.join(' / ') : '(データなし)'}
+                {samples.length > 0 ? samples.join(' / ') : '(No data)'}
               </td>
             </tr>
           );
@@ -217,10 +217,10 @@ const MappingReview: React.FC<MappingReviewProps> = ({
 
   return (
     <div style={{ marginTop: '1rem' }}>
-      <h2>マッピング結果</h2>
+      <h2>Mapping results</h2>
       {missingRequiredFields && missingRequiredFields.length > 0 && (
         <div style={{ color: 'red', marginBottom: '1rem' }}>
-          必須フィールドが未マッピングです: {missingRequiredFields.join(', ')}
+          Required fields are unmapped: {missingRequiredFields.join(', ')}
         </div>
       )}
 
@@ -228,19 +228,19 @@ const MappingReview: React.FC<MappingReviewProps> = ({
       {systemFieldTable}
 
       {/* (2) ファイル上の未マッピング列一覧 */}
-      <h3 style={{ marginTop: '2rem' }}>未マッピング列</h3>
+      <h3 style={{ marginTop: '2rem' }}>Unmapped columns</h3>
       {unmappedColumns.length === 0 ? (
-        <p>未マッピングの列はありません。</p>
+        <p>There are no unmapped column.</p>
       ) : (
         unmappedTable
       )}
 
       <div style={{ marginTop: '1rem' }}>
         <button onClick={onConfirm} style={{ marginRight: '1rem' }}>
-          このマッピングでOK
+          This mapping is OK
         </button>
         <button onClick={onNeedImprovement}>
-          修正指示を行う
+          Provide revision instruction
         </button>
       </div>
     </div>
@@ -271,8 +271,8 @@ const MappingPage: React.FC = () => {
   if (!analysisResult) {
     return (
       <div style={{ margin: '2rem' }}>
-        <h2>マッピング情報がありません</h2>
-        <button onClick={() => navigate('/upload')}>ファイルアップロード画面に戻る</button>
+        <h2>There are no mapping information</h2>
+        <button onClick={() => navigate('/upload')}>Back to file upload screen</button>
       </div>
     );
   }
@@ -284,15 +284,15 @@ const MappingPage: React.FC = () => {
     console.log("mappingResponse:", mappingResponse);
     console.log("uploadedFileName:", uploadedFileName);
     if (!mappingResponse || !mappingResponse.mapping) {
-      setMessage("マッピング情報がありません。");
+      setMessage("There are no mapping information.");
       return;
     }
     if (!uploadedFileName) {
-      setMessage("アップロードファイル名が指定されていません。");
+      setMessage("Upload file name is not provided.");
       return;
     }
         
-    setMessage("コード生成を開始します...");
+    setMessage("Generation of code start...");
     try {
       const res = await fetch("/api/codegen", {
         method: "POST",
@@ -305,23 +305,23 @@ const MappingPage: React.FC = () => {
       });
       if (!res.ok) {
         const errData = await res.json();
-        setMessage(errData.message || "コード生成に失敗しました。");
+        setMessage(errData.message || "Failed to generate code.");
         return;
       }
       const data = await res.json();
       if (data.status === "success") {
-        setMessage("コード生成完了！ 以下のリンクからダウンロードできます。");
+        setMessage("Completed code generation! Download the Python code from below link.");
         // data.generatedPyPath と data.transformedDataPath を使ってリンク表示する
         setDownloadLinks({
           py: data.generatedPyPath,
           transformed: data.transformedDataPath
         });
       } else {
-        setMessage(data.message || "コード生成に失敗しました。");
+        setMessage(data.message || "Failed to generate code.");
       }
     } catch (e) {
       console.error(e);
-      setMessage("API呼び出しに失敗しました。");
+      setMessage("Failed to call API.");
     }
   };
 
@@ -334,11 +334,11 @@ const MappingPage: React.FC = () => {
   const handleRemap = async (instruction: string) => {
     if (!mappingResponse) return;
     if (!instruction.trim()) {
-      alert('修正指示を入力してください。');
+      alert('Provide revision instruction.');
       return;
     }
   
-    setMessage('再マッピング中...');
+    setMessage('Remap in-progerss...');
     try {
       const res = await fetch('/api/remap', {
         method: 'POST',
@@ -350,7 +350,7 @@ const MappingPage: React.FC = () => {
       });
       if (!res.ok) {
         const errData = await res.json();
-        setMessage(errData.message || '再マッピングに失敗しました。');
+        setMessage(errData.message || 'Failed to remap.');
         return;
       }
       const data = await res.json();
@@ -360,19 +360,19 @@ const MappingPage: React.FC = () => {
           ...analysisResult,
           mappingResponse: data.mappingResponse
         });
-        setMessage('再マッピングが完了しました。');
+        setMessage('Remap completed.');
       } else {
-        setMessage(data.message || '再マッピングに失敗しました。');
+        setMessage(data.message || 'Failed to remap.');
       }
     } catch (error) {
       console.error(error);
-      setMessage('再マッピングAPI呼び出しに失敗しました。');
+      setMessage('Failed to call remapping API.');
     }
   };
 
   return (
     <div style={{ margin: '2rem' }}>
-      <h1>マッピングレビュー画面</h1>
+      <h1>Mapping review screen</h1>
       {message && (
         <div style={{ color: 'blue', marginBottom: '1rem' }}>
           {message}
@@ -383,14 +383,14 @@ const MappingPage: React.FC = () => {
       {downloadLinks.py && (
         <div style={{ marginTop: '1rem' }}>
           <a href={downloadLinks.py} download>
-            生成されたPythonコードをダウンロード
+            Download the generated Python code
           </a>
         </div>
       )}
       {downloadLinks.transformed && (
         <div style={{ marginTop: '1rem' }}>
           <a href={downloadLinks.transformed} download>
-            変換後のデータをダウンロード
+            Download the converted data
           </a>
         </div>
       )}
@@ -398,7 +398,7 @@ const MappingPage: React.FC = () => {
       {/* ヘッダー判定の概要表示 */}
       {headerResponse && headerResponse.headerDetection && (
         <div style={{ background: '#eee', padding: '1rem', marginBottom: '1rem' }}>
-          <h3>ヘッダー判定結果</h3>
+          <h3>Header determination result</h3>
           <p>isHeaderPresent: {String(headerResponse.headerDetection.isHeaderPresent)}</p>
           <p>headerRowIndex: {headerResponse.headerDetection.headerRowIndex}</p>
           <p>reason: {headerResponse.headerDetection.reason}</p>

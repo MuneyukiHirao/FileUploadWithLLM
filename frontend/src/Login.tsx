@@ -23,7 +23,7 @@ function Login() {
       if (!response.ok) {
         // 4xx, 5xx エラー
         const errorData = await response.json();
-        setErrorMessage(errorData.message || 'ログインに失敗しました。');
+        setErrorMessage(errorData.message || 'Failed to login.');
         return;
       }
 
@@ -33,21 +33,21 @@ function Login() {
         // ログイン成功 → /upload に遷移
         navigate('/upload');
       } else {
-        setErrorMessage(data.message || 'ログインに失敗しました。');
+        setErrorMessage(data.message || 'Failed to login');
       }
     } catch (err) {
       console.error("fetch error: ", err);
-      setErrorMessage('サーバーと通信できませんでした。');
+      setErrorMessage('Cannot communicate with server.');
     }
   };
 
   return (
     <div style={{ margin: '2rem' }}>
-      <h1>ログイン</h1>
+      <h1>Login</h1>
       <form onSubmit={handleSubmit} style={{ display: 'inline-block' }}>
         <div style={{ marginBottom: '1rem' }}>
           <label>
-            ユーザID:
+            User ID:
             <input
               type="text"
               value={userId}
@@ -57,7 +57,7 @@ function Login() {
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <label>
-            パスワード:
+            Password:
             <input
               type="password"
               value={password}
@@ -65,7 +65,7 @@ function Login() {
             />
           </label>
         </div>
-        <button type="submit">ログイン</button>
+        <button type="submit">Login</button>
       </form>
 
       {errorMessage && (
